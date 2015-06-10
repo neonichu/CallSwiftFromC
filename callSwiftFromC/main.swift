@@ -6,10 +6,12 @@
 //  Copyright (c) 2015 Boris Bügling. All rights reserved.
 //
 
-@asmname("executeFunction") func executeFunction(fp: CFunctionPointer<()->()>)
+typealias CFunction = @convention(c) ()->()
+
+@asmname("executeFunction") func executeFunction(fp: CFunction)
 
 func greeting() {
-    println("Hello from Swift")
+    print("Hello from Swift")
 }
 
 /*let p = UnsafeMutablePointer<()->()>.alloc(1)
@@ -44,5 +46,5 @@ private struct function_obj {
 }
 
 private let trampoline = unsafeBitCast(greeting, function_trampoline.self)
-let fp = CFunctionPointer<()->()>(trampoline.function_obj_ptr.memory.function_ptr)
+let fp = unsafeBitCast(trampoline.function_obj_ptr.memory.function_ptr, CFunction.self)
 executeFunction(fp)
